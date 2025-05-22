@@ -1,8 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('gameCanvas3');
-    const ctx = canvas.getContext('2d');
     const messageDisplay = document.getElementById('messageDisplay3');
     const resetButton = document.getElementById('resetButton3');
+
+    if (!canvas || !messageDisplay || !resetButton) {
+        console.error('One or more essential HTML elements are missing. Game cannot start.');
+        if (messageDisplay) messageDisplay.textContent = 'Error: Game files incomplete.';
+        return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Failed to get canvas rendering context. Game cannot start.');
+        if (messageDisplay) messageDisplay.textContent = 'Error: Canvas not supported or disabled.';
+        return;
+    }
 
     const TILE_SIZE = 40;
     const ROWS = canvas.height / TILE_SIZE;
@@ -12,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Player properties
     const playerColor = '#3498db';
-    const playerSize = TILE_SIZE / 2;
+    const playerSize = TILE_SIZE / 2; // Player is a square of this size
 
     // Goal properties
     const goalColor = '#2ecc71';
@@ -21,8 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Maze wall color
     const wallColor = '#333333';
 
-    // Predefined maze layout (1 = wall, 0 = path)
-    // A simple maze, can be expanded or randomized later
     const MAZE_LAYOUTS = [
         [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -52,14 +62,32 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentMazeIndex = 0;
 
     function initGame() {
-        maze = MAZE_LAYOUTS[currentMazeIndex];
-        currentMazeIndex = (currentMazeIndex + 1) % MAZE_LAYOUTS.length; // Cycle through mazes
+        if (MAZE_LAYOUTS.length === 0) {
+            console.error("No maze layouts defined!");
+            messageDisplay.textContent = "Error: No mazes available.";
+            resetButton.disabled = true;
+            document.removeEventListener('keydown', handleKeyPress); // Prevent trying to play
+            return;
+        }
 
-        // Player starting position (top-left, first empty cell)
-        player = { x: TILE_SIZE + playerSize / 2, y: TILE_SIZE + playerSize / 2 };
+        maze = MAZE_LAYOUTS[currentMazeIndex];
+        // Prepare currentMazeIndex for the *next* call to initGame
+        currentMazeIndex = (currentMazeIndex + 1) % MAZE_LAYOUTS.length;
+
+        // Place player's center at the center of the first open tile (1,1)
+        player = { 
+            x: 1 * TILE_SIZE + TILE_SIZE / 2, 
+            y: 1 * TILE_SIZE + TILE_SIZE / 2 
+        };
         
-        // Goal position (bottom-right, last empty cell before wall)
-        goal = { x: (COLS - 2) * TILE_SIZE + TILE_SIZE / 2, y: (ROWS - 2) * TILE_SIZE + TILE_SIZE / 2 };
+        // Goal position: center of tile (ROWS-2, COLS-2)
+        // Ensure goal is within maze boundaries if maze isn't square or default size
+        const goalCol = Math.max(1, COLS - 2);
+        const goalRow = Math.max(1, ROWS - 2);
+        goal = { 
+            x: goalCol * TILE_SIZE + TILE_SIZE / 2, 
+            y: goalRow * TILE_SIZE + TILE_SIZE / 2 
+        }; 
         
         messageDisplay.textContent = '';
         draw();
@@ -68,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function drawMaze() {
         for (let row = 0; row < ROWS; row++) {
             for (let col = 0; col < COLS; col++) {
-                if (maze[row][col] === 1) {
+                if (maze[row] && maze[row][col] === 1) { // Added check for maze[row] existence
                     ctx.fillStyle = wallColor;
                     ctx.fillRect(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 }
@@ -87,35 +115,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function draw() {
-        // Clear canvas (set to light background color)
-        ctx.fillStyle = '#ecf0f1';
+        ctx.fillStyle = '#ecf0f1'; // Background color for the maze area
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
         drawMaze();
         drawGoal();
         drawPlayer();
     }
 
     function movePlayer(dx, dy) {
-        const newX = player.x + dx;
-        const newY = player.y + dy;
+        const targetCenterX = player.x + dx;
+        const targetCenterY = player.y + dy;
+        const halfPSize = playerSize / 2;
 
-        const playerGridCol = Math.floor(newX / TILE_SIZE);
-        const playerGridRow = Math.floor(newY / TILE_SIZE);
+        // Calculate player's bounding box at the target position
+        const pLeft = targetCenterX - halfPSize;
+        const pRight = targetCenterX + halfPSize;
+        const pTop = targetCenterY - halfPSize;
+        const pBottom = targetCenterY + halfPSize;
 
-        // Check for wall collisions
-        // This collision needs to be more precise considering player size
-        const nextTileCol = Math.floor((newX - playerSize/2 + dx * playerSize/2 ) / TILE_SIZE);
-        const nextTileRow = Math.floor((newY - playerSize/2 + dy * playerSize/2 ) / TILE_SIZE);
-        const nextTileCol2 = Math.floor((newX + playerSize/2 + dx * playerSize/2 -1) / TILE_SIZE);
-        const nextTileRow2 = Math.floor((newY + playerSize/2 + dy * playerSize/2 -1) / TILE_SIZE);
+        // Epsilon for floating point precision at tile edges
+        const epsilon = 0.001; 
 
-        if (maze[nextTileRow] && maze[nextTileRow][nextTileCol] === 0 && 
-            maze[nextTileRow2] && maze[nextTileRow2][nextTileCol2] === 0 &&
-            maze[nextTileRow] && maze[nextTileRow][nextTileCol2] === 0 &&
-            maze[nextTileRow2] && maze[nextTileRow2][nextTileCol] === 0) {
-            player.x = newX;
-            player.y = newY;
+        // Get tile coordinates for each corner of the player's bounding box
+        const c1_col = Math.floor(pLeft / TILE_SIZE);
+        const c1_row = Math.floor(pTop / TILE_SIZE);
+        const c2_col = Math.floor((pRight - epsilon) / TILE_SIZE);
+        const c2_row = Math.floor(pTop / TILE_SIZE);
+        const c3_col = Math.floor(pLeft / TILE_SIZE);
+        const c3_row = Math.floor((pBottom - epsilon) / TILE_SIZE);
+        const c4_col = Math.floor((pRight - epsilon) / TILE_SIZE);
+        const c4_row = Math.floor((pBottom - epsilon) / TILE_SIZE);
+
+        let canMove = true;
+        // Check each corner against boundaries and walls
+        // Array of corner coordinates [row, col]
+        const corners = [
+            [c1_row, c1_col],
+            [c2_row, c2_col],
+            [c3_row, c3_col],
+            [c4_row, c4_col]
+        ];
+
+        for (const [row, col] of corners) {
+            if (row < 0 || row >= ROWS || col < 0 || col >= COLS || 
+                !maze[row] || maze[row][col] === 1) { // Added !maze[row] check
+                canMove = false;
+                break;
+            }
+        }
+        
+        if (canMove) {
+            player.x = targetCenterX;
+            player.y = targetCenterY;
         }
 
         draw();
@@ -123,31 +174,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkWinCondition() {
+        // Check distance between player center and goal center
         const dist = Math.sqrt(Math.pow(player.x - goal.x, 2) + Math.pow(player.y - goal.y, 2));
-        if (dist < (playerSize / 2 + goalSize / 2) * 0.8) { // Check if player overlaps goal
+        // Consider collision when centers are close enough for overlap
+        const collisionThreshold = (playerSize / 2 + goalSize / 2) * 0.8; // 80% overlap needed
+        if (dist < collisionThreshold) { 
             messageDisplay.textContent = 'Congratulations! You reached the goal!';
-            // Optionally, disable movement or load next maze after a delay
-            // For now, player can just start a new maze with the button.
+            // Future: could add sound or disable keys more formally
         }
     }
 
     function handleKeyPress(e) {
-        if (messageDisplay.textContent.startsWith('Congratulations')) return; // Stop movement if won
+        // Do not process movement if game is won
+        if (messageDisplay.textContent.startsWith('Congratulations')) return;
 
         const moveSpeed = TILE_SIZE / 2; // Move half a tile at a time
-        switch (e.key) {
-            case 'ArrowUp':
+        let moved = false;
+        switch (e.key.toLowerCase()) {
+            case 'w': // Fall-through for arrow keys if preferred
+            case 'arrowup':
                 movePlayer(0, -moveSpeed);
+                moved = true;
                 break;
-            case 'ArrowDown':
+            case 's':
+            case 'arrowdown':
                 movePlayer(0, moveSpeed);
+                moved = true;
                 break;
-            case 'ArrowLeft':
+            case 'a':
+            case 'arrowleft':
                 movePlayer(-moveSpeed, 0);
+                moved = true;
                 break;
-            case 'ArrowRight':
+            case 'd':
+            case 'arrowright':
                 movePlayer(moveSpeed, 0);
+                moved = true;
                 break;
+        }
+
+        if (moved) {
+            e.preventDefault(); // Prevent default browser action (e.g., scrolling with arrow keys)
         }
     }
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maze Runner - Arcade Game Hub</title>
     <link rel="stylesheet" href="../../style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMcounts/cnTT6UcqB87B5UxFpOoukNLAaXMLWEPFC" crossorigin="anonymous">
     <style>
         body {
             display: flex;
@@ -58,6 +58,9 @@
             background-color: #ecf0f1; /* Light canvas for maze visibility */
             border: 3px solid #3498db;
             border-radius: 5px;
+            display: block; /* Prevents extra space below canvas */
+            margin-left: auto;
+            margin-right: auto;
         }
         .instructions3, .message3 {
             margin-top: 15px;
@@ -67,6 +70,7 @@
         .message3 {
             color: #2ecc71;
             font-weight: bold;
+            min-height: 1.2em; /* Reserve space for messages */
         }
         .button-container3 {
             margin-top: 15px;
@@ -80,26 +84,37 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
         }
         .game-button3:hover {
             background-color: #27ae60;
+        }
+        kbd {
+            background-color: #333;
+            border-radius: 3px;
+            border: 1px solid #555;
+            box-shadow: 0 2px 0 #555, inset 0 1px 0 #777;
+            color: #eee;
+            font-family: monospace;
+            padding: 2px 6px;
+            margin: 0 2px;
         }
     </style>
 </head>
 <body>
     <header class="game-header">
         <h1>Maze Runner</h1>
-        <a href="../../index.html" class="back-link"><i class="fas fa-home"></i> Back to Home</a>
+        <a href="../../index.html" class="back-link"><i class="fas fa-home" aria-hidden="true"></i> Back to Home</a>
     </header>
 
     <main class="game-container3">
         <canvas id="gameCanvas3" width="400" height="400"></canvas>
         <div class="instructions3">
-            <p>Use <kbd>Arrow Keys</kbd> to navigate the player (blue square) to the goal (green square).</p>
+            <p>Use <kbd>W</kbd>, <kbd>A</kbd>, <kbd>S</kbd>, <kbd>D</kbd> or <kbd>Arrow Keys</kbd> to navigate the player (blue square) to the goal (green square).</p>
         </div>
         <div id="messageDisplay3" class="message3"></div>
         <div class="button-container3">
-            <button id="resetButton3" class="game-button3"><i class="fas fa-redo"></i> New Maze</button>
+            <button id="resetButton3" class="game-button3"><i class="fas fa-redo" aria-hidden="true"></i> New Maze</button>
         </div>
     </main>
 
