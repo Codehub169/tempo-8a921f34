@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aqua Harmony - Arcade Game Hub</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a2e; /* Consistent dark background */
+            color: #ecf0f1;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .game-container {
+            text-align: center;
+            background-color: #1f4068; /* Deeper blue for underwater theme */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.5); /* Greenish glow */
+            margin-top: 20px;
+        }
+        #gameCanvas2 {
+            background-image: url('https://images.unsplash.com/photo-152470479670def065002c1398b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHVuZGVyd2F0ZXIlMjBiYWNrZ3JvdW5kfGVufDB8fDB8fHww&auto=format&fit=crop&w=600&q=60');
+            background-size: cover;
+            border: 2px solid #2ecc71; /* Secondary color border */
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+        .game-header {
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #111;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .game-header h1 {
+            font-family: 'Press Start 2P', cursive;
+            color: #2ecc71; /* Secondary color for title */
+            font-size: 1.5em;
+            text-shadow: 0 0 10px #2ecc71;
+            margin: 0;
+        }
+        .back-link {
+            color: #2ecc71;
+            text-decoration: none;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+        }
+        .back-link i {
+            margin-right: 8px;
+        }
+        .back-link:hover {
+            color: #ffeb3b;
+            text-decoration: underline;
+        }
+        .instructions, .score {
+            margin-top: 15px;
+            font-size: 1em;
+            color: #ecf0f1;
+        }
+    </style>
+</head>
+<body>
+    <header class="game-header">
+        <h1>Aqua Harmony</h1>
+        <a href="../../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </header>
+
+    <main class="game-container">
+        <canvas id="gameCanvas2" width="600" height="400"></canvas>
+        <div class="instructions">
+            <p>Use <strong>Arrow Keys</strong> to guide the fish. Collect the shimmering pearls!</p>
+        </div>
+        <div class="score">
+            <p>Pearls: <span id="scoreDisplay2">0</span></p>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "simple-html-css-js-game-dashboard",
+  "version": "1.0.0",
+  "description": "A simple multi-page website for playing browser-based games.",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 9000 -o"
+  },
+  "keywords": [
+    "games",
+    "html",
+    "css",
+    "javascript",
+    "dashboard"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

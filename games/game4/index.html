@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Breaker - Arcade Game Hub</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a2e;
+            color: #ecf0f1;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .game-header {
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            background-color: #0d0d16;
+            border-bottom: 3px solid #f000ff; /* Magenta accent for this game */
+        }
+        .game-header h1 {
+            font-family: 'Press Start 2P', cursive;
+            color: #f000ff;
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px #f000ff, 0 0 20px #f000ff;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .back-link:hover {
+            background-color: #2980b9;
+        }
+        .game-container4 {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #1f1f30; /* Slightly different dark shade for game area */
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(240, 0, 255, 0.5);
+            text-align: center;
+        }
+        #gameCanvas4 {
+            background-color: #2c3e50; /* Dark canvas background */
+            border: 3px solid #f000ff;
+            border-radius: 5px;
+            display: block; /* Prevents extra space below canvas */
+            margin: 0 auto;
+        }
+        .game-info4 {
+            display: flex;
+            justify-content: space-around;
+            width: 480px; /* Same as canvas width */
+            margin: 15px auto;
+            font-size: 1.2em;
+            color: #ecf0f1;
+        }
+        .game-info4 span {
+            color: #ffeb3b; /* Yellow for score/lives */
+        }
+        .instructions4, .game-message4 {
+            margin-top: 15px;
+            font-size: 1.1em;
+            color: #ecf0f1;
+        }
+        .game-message4 {
+            font-weight: bold;
+            min-height: 20px; /* Reserve space for messages */
+        }
+        .game-button4 {
+            margin-top: 10px;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            color: white;
+            background-color: #e74c3c; /* Contrasting button color */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .game-button4:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <header class="game-header">
+        <h1>Block Breaker</h1>
+        <a href="../../index.html" class="back-link"><i class="fas fa-home"></i> Back to Home</a>
+    </header>
+
+    <main class="game-container4">
+        <div class="game-info4">
+            <p>Score: <span id="scoreDisplay4">0</span></p>
+            <p>Lives: <span id="livesDisplay4">3</span></p>
+        </div>
+        <canvas id="gameCanvas4" width="480" height="320"></canvas>
+        <div id="gameMessageDisplay4" class="game-message4"></div>
+        <div class="instructions4">
+            <p>Use <kbd>Left</kbd> & <kbd>Right</kbd> Arrow Keys to move the paddle.</p>
+            <p>Break all blocks to win! Don't let the ball fall.</p>
+        </div>
+        <button id="startButton4" class="game-button4"><i class="fas fa-play"></i> Start Game</button>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

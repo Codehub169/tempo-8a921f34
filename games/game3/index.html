@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Runner - Arcade Game Hub</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a2e; /* Consistent dark background */
+            color: #ecf0f1;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .game-header {
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            background-color: #0d0d16;
+            border-bottom: 3px solid #00f0ff;
+        }
+        .game-header h1 {
+            font-family: 'Press Start 2P', cursive;
+            color: #00f0ff;
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .back-link:hover {
+            background-color: #2980b9;
+        }
+        .game-container3 {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #2c3e50; /* Darker game area */
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+            text-align: center;
+        }
+        #gameCanvas3 {
+            background-color: #ecf0f1; /* Light canvas for maze visibility */
+            border: 3px solid #3498db;
+            border-radius: 5px;
+        }
+        .instructions3, .message3 {
+            margin-top: 15px;
+            font-size: 1.1em;
+            color: #ecf0f1;
+        }
+        .message3 {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        .button-container3 {
+            margin-top: 15px;
+        }
+        .game-button3 {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: #2ecc71;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .game-button3:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <header class="game-header">
+        <h1>Maze Runner</h1>
+        <a href="../../index.html" class="back-link"><i class="fas fa-home"></i> Back to Home</a>
+    </header>
+
+    <main class="game-container3">
+        <canvas id="gameCanvas3" width="400" height="400"></canvas>
+        <div class="instructions3">
+            <p>Use <kbd>Arrow Keys</kbd> to navigate the player (blue square) to the goal (green square).</p>
+        </div>
+        <div id="messageDisplay3" class="message3"></div>
+        <div class="button-container3">
+            <button id="resetButton3" class="game-button3"><i class="fas fa-redo"></i> New Maze</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
